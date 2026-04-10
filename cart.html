@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Cart — Momsies</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
@@ -20,36 +17,30 @@
             margin-left: 5px;
             display: none;
         }
-
         .user-greeting {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
         .user-name {
             font-weight: 500;
             color: var(--deep-terracotta);
         }
-
         .empty-cart {
             text-align: center;
             padding: 60px 20px;
         }
-
         .empty-cart i {
             font-size: 4rem;
             color: var(--dusty-rose);
             margin-bottom: 20px;
         }
-
         .cart-item-img {
             width: 80px;
             height: 80px;
             object-fit: cover;
             border-radius: 16px;
         }
-
         .quantity-input {
             width: 70px;
             padding: 8px;
@@ -57,9 +48,31 @@
             border: 1px solid var(--blush);
             text-align: center;
         }
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+        .cart-table th, .cart-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--blush);
+        }
+        .cart-table th {
+            background: var(--warm-gray);
+            color: var(--deep-terracotta);
+            font-weight: 600;
+        }
+        .cart-summary {
+            background: var(--warm-gray);
+            border-radius: 28px;
+            padding: 24px;
+            margin-top: 24px;
+        }
     </style>
 </head>
-
 <body>
     <div class="navbar">
         <div class="container nav-flex">
@@ -80,7 +93,12 @@
 
     <div class="container" style="margin: 48px auto;">
         <h1 class="section-title">🛒 Your Shopping Cart</h1>
-        <div id="cartContainer"></div>
+        <div id="cartContainer">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-bag"></i>
+                <h3>Loading your cart...</h3>
+            </div>
+        </div>
     </div>
 
     <footer>
@@ -92,45 +110,34 @@
     </footer>
 
     <script>
-        function displayCart() {
-            const cartContainer = document.getElementById('cartContainer');
-            const cart = JSON.parse(localStorage.getItem('momsiesCart')) || [];
-
-            if (cart.length === 0) {
-                cartContainer.innerHTML = '<div class="empty-cart"><i class="fas fa-shopping-bag"></i><h3>Your cart is empty</h3><p>Looks like you haven\'t added any packages yet.</p><a href="category.html"><button class="btn-primary" style="margin-top: 20px;">🌸 Shop Our Packages 🌸</button></a></div>';
-                return;
+        // ========== CART FUNCTIONS ==========
+        
+        // Get cart from localStorage
+        function getCart() {
+            const cart = localStorage.getItem('momsiesCart');
+            if (cart) {
+                return JSON.parse(cart);
             }
-
-            let cartHtml = '<table class="cart-table"><thead><tr><th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th></th></tr></thead><tbody>';
-            let total = 0;
-
-            for (let i = 0; i < cart.length; i++) {
-                const item = cart[i];
-                const subtotal = item.price * item.quantity;
-                total += subtotal;
-
-                cartHtml += '<tr><td style="display: flex; align-items: center; gap: 15px;"><img src="' + item.image + '" alt="' + item.name + '" class="cart-item-img" onerror="this.src=\'https://placehold.co/100x100/f7c9c0/b45f4b?text=Product\'"><strong>' + item.name + '</strong></td><td>JMD ' + item.price.toLocaleString() + '</td><td><input type="number" value="' + item.quantity + '" min="1" class="quantity-input" data-id="' + item.id + '" onchange="updateQuantity(\'' + item.id + '\', this.value)"></td><td>JMD ' + subtotal.toLocaleString() + '</td><td><button class="btn-outline" onclick="removeFromCart(\'' + item.id + '\')">Remove</button></td></tr>';
-            }
-
-            const shipping = total > 7000 ? 0 : 500;
-            const grandTotal = total + shipping;
-
-            cartHtml += '</tbody></table><div class="cart-summary"><h3>Order Summary</h3><div style="display: flex; justify-content: space-between; margin-bottom: 12px;"><span>Subtotal:</span><span>JMD ' + total.toLocaleString() + '</span></div><div style="display: flex; justify-content: space-between; margin-bottom: 12px;"><span>Shipping:</span><span>' + (shipping === 0 ? 'FREE' : 'JMD ' + shipping.toLocaleString()) + '</span></div>' + (total < 7000 ? '<p style="font-size: 0.8rem; color: var(--dusty-rose); margin-bottom: 12px;">✨ Add JMD ' + (7000 - total).toLocaleString() + ' more for FREE shipping ✨</p>' : '<p style="font-size: 0.8rem; color: var(--sage); margin-bottom: 12px;">🎉 You qualify for FREE shipping! 🎉</p>') + '<div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-top: 1px solid var(--blush); padding-top: 12px;"><span><strong>Total:</strong></span><span><strong>JMD ' + grandTotal.toLocaleString() + '</strong></span></div><a href="checkout.html"><button class="btn-primary" style="width: 100%; margin-top: 16px;">Proceed to Checkout →</button></a><button onclick="clearCart()" class="btn-outline" style="width: 100%; margin-top: 12px;">Clear Cart</button><a href="category.html" style="display: block; text-align: center; margin-top: 16px;">← Continue Shopping</a></div>';
-
-            cartContainer.innerHTML = cartHtml;
-            updateCartCountDisplay();
+            return [];
         }
-
-        function removeFromCart(productId) {
-            let cart = JSON.parse(localStorage.getItem('momsiesCart')) || [];
-            cart = cart.filter(item => item.id !== productId);
+        
+        // Save cart to localStorage
+        function saveCart(cart) {
             localStorage.setItem('momsiesCart', JSON.stringify(cart));
-            displayCart();
-            updateCartCountDisplay();
+            updateCartCount();
         }
-
+        
+        // Remove item from cart
+        function removeFromCart(productId) {
+            let cart = getCart();
+            cart = cart.filter(item => item.id !== productId);
+            saveCart(cart);
+            displayCart();
+        }
+        
+        // Update quantity
         function updateQuantity(productId, newQuantity) {
-            let cart = JSON.parse(localStorage.getItem('momsiesCart')) || [];
+            let cart = getCart();
             const item = cart.find(item => item.id === productId);
             if (item) {
                 newQuantity = parseInt(newQuantity);
@@ -139,37 +146,124 @@
                 } else {
                     item.quantity = newQuantity;
                 }
-                localStorage.setItem('momsiesCart', JSON.stringify(cart));
+                saveCart(cart);
                 displayCart();
-                updateCartCountDisplay();
             }
         }
-
+        
+        // Clear entire cart
         function clearCart() {
             localStorage.removeItem('momsiesCart');
             displayCart();
-            updateCartCountDisplay();
+            updateCartCount();
         }
-
-        function updateCartCountDisplay() {
-            const cart = JSON.parse(localStorage.getItem('momsiesCart')) || [];
+        
+        // Update cart count badge
+        function updateCartCount() {
+            const cart = getCart();
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const cartCountSpan = document.getElementById('cartCount');
-            if (cartCountSpan) {
+            const cartCountSpans = document.querySelectorAll('.cart-count');
+            cartCountSpans.forEach(span => {
                 if (totalItems > 0) {
-                    cartCountSpan.textContent = totalItems;
-                    cartCountSpan.style.display = 'inline-flex';
+                    span.textContent = totalItems;
+                    span.style.display = 'inline-flex';
                 } else {
-                    cartCountSpan.style.display = 'none';
+                    span.style.display = 'none';
                 }
-            }
+            });
         }
-
+        
+        // Display cart contents
+        function displayCart() {
+            const cartContainer = document.getElementById('cartContainer');
+            const cart = getCart();
+            
+            console.log('Cart contents:', cart); // For debugging
+            
+            if (!cart || cart.length === 0) {
+                cartContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h3>Your cart is empty</h3>
+                        <p>Looks like you haven't added any packages yet.</p>
+                        <a href="category.html"><button class="btn-primary" style="margin-top: 20px;">🌸 Shop Our Packages 🌸</button></a>
+                    </div>
+                `;
+                return;
+            }
+            
+            let cartHtml = `
+                <table class="cart-table">
+                    <thead>
+                        <tr><th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th></th></tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            let total = 0;
+            
+            for (let i = 0; i < cart.length; i++) {
+                const item = cart[i];
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                
+                const imageUrl = item.image || 'https://placehold.co/100x100/f7c9c0/b45f4b?text=Product';
+                
+                cartHtml += `
+                    <tr>
+                        <td style="display: flex; align-items: center; gap: 15px;">
+                            <img src="${imageUrl}" alt="${item.name}" class="cart-item-img" onerror="this.src='https://placehold.co/100x100/f7c9c0/b45f4b?text=Product'">
+                            <strong>${item.name}</strong>
+                        </td>
+                        <td>JMD ${item.price.toLocaleString()}</td>
+                        <td>
+                            <input type="number" value="${item.quantity}" min="1" class="quantity-input" data-id="${item.id}" onchange="updateQuantity('${item.id}', this.value)">
+                        </td>
+                        <td>JMD ${subtotal.toLocaleString()}</td>
+                        <td><button class="btn-outline" onclick="removeFromCart('${item.id}')">Remove</button></td>
+                    </tr>
+                `;
+            }
+            
+            const shipping = total > 7000 ? 0 : 500;
+            const grandTotal = total + shipping;
+            
+            cartHtml += `
+                    </tbody>
+                </table>
+                
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <span>Subtotal:</span>
+                        <span>JMD ${total.toLocaleString()}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <span>Shipping:</span>
+                        <span>${shipping === 0 ? 'FREE' : 'JMD ' + shipping.toLocaleString()}</span>
+                    </div>
+                    ${total < 7000 ? '<p style="font-size: 0.8rem; color: var(--dusty-rose); margin-bottom: 12px;">✨ Add JMD ' + (7000 - total).toLocaleString() + ' more for FREE shipping ✨</p>' : '<p style="font-size: 0.8rem; color: var(--sage); margin-bottom: 12px;">🎉 You qualify for FREE shipping! 🎉</p>'}
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-top: 1px solid var(--blush); padding-top: 12px;">
+                        <span><strong>Total:</strong></span>
+                        <span><strong>JMD ${grandTotal.toLocaleString()}</strong></span>
+                    </div>
+                    <a href="checkout.html"><button class="btn-primary" style="width: 100%; margin-top: 16px;">Proceed to Checkout →</button></a>
+                    <button onclick="clearCart()" class="btn-outline" style="width: 100%; margin-top: 12px;">Clear Cart</button>
+                    <a href="category.html" style="display: block; text-align: center; margin-top: 16px;">← Continue Shopping</a>
+                </div>
+            `;
+            
+            cartContainer.innerHTML = cartHtml;
+            updateCartCount();
+        }
+        
+        // ========== AUTH FUNCTIONS ==========
+        
         function updateAuthSection() {
             const authSection = document.getElementById('authSection');
             if (!authSection) return;
             const loggedInUser = localStorage.getItem('momsiesLoggedInUser');
-
+            
             if (loggedInUser) {
                 const user = JSON.parse(loggedInUser);
                 authSection.innerHTML = '<div class="user-greeting"><span class="user-name"><i class="fas fa-heart"></i> Hello, ' + user.name + '!</span><button class="btn-outline" onclick="handleLogout()" style="padding: 6px 16px;">Sign Out</button></div>';
@@ -177,20 +271,22 @@
                 authSection.innerHTML = '<a href="login.html"><button class="btn-primary"><i class="fas fa-heart"></i> Sign In</button></a>';
             }
         }
-
+        
         function handleLogout() {
             localStorage.removeItem('momsiesLoggedInUser');
             alert('🌸 You have been logged out. Come back soon!');
             updateAuthSection();
-            updateCartCountDisplay();
+            updateCartCount();
             displayCart();
         }
-
-        document.addEventListener('DOMContentLoaded', function () {
+        
+        // ========== PAGE LOAD ==========
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Cart page loaded');
             updateAuthSection();
             displayCart();
         });
     </script>
 </body>
-
 </html>
