@@ -1,5 +1,5 @@
 // Momsies - Shopping Cart Logic
-// Uses localStorage to save cart items across all pages
+// Works with your existing category.html
 
 // Get cart from localStorage
 function getCart() {
@@ -16,11 +16,11 @@ function saveCart(cart) {
     updateCartCount();
 }
 
-// Add item to cart
+// Add item to cart - THIS IS THE MAIN FUNCTION
 function addToCart(productId, productName, productPrice, productImage) {
     let cart = getCart();
     const existingItem = cart.find(item => item.id === productId);
-
+    
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
@@ -28,11 +28,11 @@ function addToCart(productId, productName, productPrice, productImage) {
             id: productId,
             name: productName,
             price: parseFloat(productPrice),
-            image: productImage || 'https://placehold.co/100x100/f7c9c0/b45f4b?text=Product',
+            image: productImage,
             quantity: 1
         });
     }
-
+    
     saveCart(cart);
     showAddedToCartMessage(productName);
     return cart;
@@ -45,6 +45,10 @@ function removeFromCart(productId) {
     saveCart(cart);
     if (typeof displayCart === 'function') {
         displayCart();
+    }
+    // Also trigger cart page refresh if on cart page
+    if (window.location.pathname.includes('cart.html')) {
+        location.reload();
     }
 }
 
@@ -64,6 +68,9 @@ function updateQuantity(productId, newQuantity) {
     if (typeof displayCart === 'function') {
         displayCart();
     }
+    if (window.location.pathname.includes('cart.html')) {
+        location.reload();
+    }
 }
 
 // Clear entire cart
@@ -73,6 +80,9 @@ function clearCart() {
         displayCart();
     }
     updateCartCount();
+    if (window.location.pathname.includes('cart.html')) {
+        location.reload();
+    }
 }
 
 // Get cart total
@@ -91,7 +101,7 @@ function getTotalItems() {
 function updateCartCount() {
     const totalItems = getTotalItems();
     const cartCountElements = document.querySelectorAll('.cart-count');
-
+    
     cartCountElements.forEach(element => {
         if (totalItems > 0) {
             element.textContent = totalItems;
@@ -112,7 +122,14 @@ function showAddedToCartMessage(productName) {
     }, 2000);
 }
 
+// Make functions available globally
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+window.updateQuantity = updateQuantity;
+window.clearCart = clearCart;
+window.getCart = getCart;
+
 // Initialize cart on page load
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     updateCartCount();
 });
