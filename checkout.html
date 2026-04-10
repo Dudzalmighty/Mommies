@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout — Momsies</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="container nav-flex">
+            <div class="logo">
+                <h1>🌸 Momsies</h1>
+                <p>nurture • comfort • joy</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="category.html">Packages</a></li>
+                <li><a href="cart.html">Cart 🛒</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container" style="margin: 48px auto;">
+        <h1 class="section-title">Secure Checkout</h1>
+
+        <div class="checkout-grid">
+            <div>
+                <div class="card">
+                    <h3>Shipping Information</h3>
+                    <div class="form-group"><label>Full Name</label><input type="text" placeholder="Mama Johnson"></div>
+                    <div class="form-group"><label>Email</label><input type="email" placeholder="mama@example.com">
+                    </div>
+                    <div class="form-group"><label>Phone</label><input type="tel" placeholder="+1 876 555 1234"></div>
+                    <div class="form-group"><label>Address</label><input type="text" placeholder="Kingston, Jamaica">
+                    </div>
+                    <div class="form-group"><label>Delivery Instructions (optional)</label><textarea rows="2"
+                            placeholder="Gate code, landmark, etc."></textarea></div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <h3>Payment Method</h3>
+                    <div class="form-group">
+                        <select>
+                            <option>Credit Card</option>
+                            <option>PayPal</option>
+                            <option>Bank Transfer</option>
+                            <option>Cash on Delivery</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Card Number</label><input type="text"
+                            placeholder="**** **** **** 1234"></div>
+                    <div style="display: flex; gap: 16px;">
+                        <div class="form-group" style="flex:1"><label>Expiry</label><input placeholder="MM/YY"></div>
+                        <div class="form-group" style="flex:1"><label>CVV</label><input placeholder="123"></div>
+                    </div>
+                </div>
+
+                <a href="thank-you.html"><button class="btn-primary" style="width: 100%; margin-top: 24px;"><i
+                            class="fas fa-lock"></i> Place Order →</button></a>
+            </div>
+
+            <div class="order-summary">
+                <h3>Your Order</h3>
+                <div class="order-item"><span>Pregnancy Glow Package</span><span>JMD 4,500</span></div>
+                <div class="order-item"><span>Newborn Nest Package</span><span>JMD 6,100</span></div>
+                <div class="order-item"><span>Shipping</span><span>JMD 500</span></div>
+                <hr style="margin: 16px 0;">
+                <div class="order-item"><strong>Total</strong><strong>JMD 11,100</strong></div>
+                <p style="font-size: 0.8rem; margin-top: 16px;"><i class="fas fa-shield-alt"></i> Your payment is secure
+                    and encrypted.</p>
+                <p style="font-size: 0.8rem;"><i class="fas fa-truck"></i> Delivery within 2-4 business days.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div style="text-align: center;">© 2026 Momsies — with tenderness</div>
+        </div>
+    </footer>
+</body>
+
+</html>

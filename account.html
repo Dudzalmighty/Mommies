@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account — Momsies</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cart-count {
+            background-color: var(--deep-terracotta);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+            margin-left: 5px;
+            display: none;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--blush), var(--cream));
+            border-radius: 32px;
+            padding: 24px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="container nav-flex">
+            <div class="logo">
+                <h1>🌸 Momsies</h1>
+                <p>nurture • comfort • joy</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="category.html">Packages</a></li>
+                <li><a href="account.html">Account</a></li>
+                <li><a href="cart.html">Cart 🛒 <span class="cart-count" id="cartCount">0</span></a></li>
+            </ul>
+            <button class="btn-primary" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+        </div>
+    </div>
+
+    <div class="container" style="margin: 48px auto;">
+        <div id="accountContent">
+            <!-- Content will be loaded dynamically -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-grid">
+            <div><i class="fas fa-leaf"></i> Momsies — New Kingston, Jamaica<br>📧 hello@momsiesja.com</div>
+            <div>© 2026 Momsies — with tenderness</div>
+        </div>
+    </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        // Get logged in user
+        function getLoggedInUser() {
+            const user = localStorage.getItem('momsiesLoggedInUser');
+            if (user) {
+                return JSON.parse(user);
+            }
+            return null;
+        }
+
+        // Check if user is logged in
+        function checkAuth() {
+            const user = getLoggedInUser();
+            if (!user) {
+                // Redirect to login if not logged in
+                window.location.href = 'login.html';
+            }
+            return user;
+        }
+
+        // Display account page with user's email
+        function displayAccount() {
+            const user = checkAuth();
+            if (!user) return;
+
+            // Get full user details from users array
+            const users = JSON.parse(localStorage.getItem('momsiesUsers')) || [];
+            const fullUser = users.find(u => u.email === user.email);
+
+            const accountContainer = document.getElementById('accountContent');
+
+            accountContainer.innerHTML = `
+                <div class="welcome-banner">
+                    <i class="fas fa-heart" style="font-size: 2rem; color: var(--deep-terracotta);"></i>
+                    <h1 style="margin: 16px 0;">Welcome back, ${fullUser ? fullUser.name : user.name}! 🌸</h1>
+                    <p>We're so happy to see you, mama.</p>
+                </div>
+                
+                <div class="checkout-grid">
+                    <div>
+                        <div class="card">
+                            <h3><i class="fas fa-user-circle"></i> Profile Information</h3>
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="profileName" value="${fullUser ? fullUser.name : user.name}" readonly style="background: var(--warm-gray);">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="profileEmail" value="${user.email}" readonly style="background: var(--warm-gray);">
+                            </div>
+                            <div class="form-group">
+                                <label>Member Since</label>
+                                <input type="text" value="${fullUser && fullUser.joinDate ? fullUser.joinDate : 'April 2026'}" readonly style="background: var(--warm-gray);">
+                            </div>
+                            <button class="btn-secondary" onclick="editProfile()">Edit Profile</button>
+                        </div>
+                        
+                        <div class="card" style="margin-top: 24px;">
+                            <h3><i class="fas fa-map-marker-alt"></i> Saved Addresses</h3>
+                            <p><strong>Default Shipping Address:</strong><br>
+                            ${fullUser && fullUser.address ? fullUser.address : 'No address saved yet'}</p>
+                            <button class="btn-outline" onclick="addAddress()">Add New Address</button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="card">
+                            <h3><i class="fas fa-shopping-bag"></i> Recent Orders</h3>
+                            <div id="recentOrders">
+                                <p style="text-align: center; color: #7e6a5e;">No orders yet.</p>
+                                <p style="text-align: center;"><a href="category.html">🌸 Start shopping 🌸</a></p>
+                            </div>
+                        </div>
+                        
+                        <div class="card" style="margin-top: 24px;">
+                            <h3><i class="fas fa-gem"></i> Loyalty Rewards</h3>
+                            <p>You have <strong>250 points</strong> — JMD 250 off your next purchase!</p>
+                            <button class="btn-secondary" onclick="alert('🎁 Loyalty rewards coming soon! You\'ll be able to redeem points at checkout.')">Redeem Now</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function editProfile() {
+            const newName = prompt('Enter your new name:');
+            if (newName && newName.trim()) {
+                const user = getLoggedInUser();
+                if (user) {
+                    // Update in users array
+                    const users = JSON.parse(localStorage.getItem('momsiesUsers')) || [];
+                    const userIndex = users.findIndex(u => u.email === user.email);
+                    if (userIndex !== -1) {
+                        users[userIndex].name = newName.trim();
+                        localStorage.setItem('momsiesUsers', JSON.stringify(users));
+                    }
+                    // Update logged in user
+                    user.name = newName.trim();
+                    localStorage.setItem('momsiesLoggedInUser', JSON.stringify(user));
+                    alert('✅ Profile updated successfully!');
+                    displayAccount();
+                }
+            }
+        }
+
+        function addAddress() {
+            const newAddress = prompt('Enter your shipping address:');
+            if (newAddress && newAddress.trim()) {
+                const user = getLoggedInUser();
+                if (user) {
+                    const users = JSON.parse(localStorage.getItem('momsiesUsers')) || [];
+                    const userIndex = users.findIndex(u => u.email === user.email);
+                    if (userIndex !== -1) {
+                        users[userIndex].address = newAddress.trim();
+                        localStorage.setItem('momsiesUsers', JSON.stringify(users));
+                        alert('✅ Address saved successfully!');
+                        displayAccount();
+                    }
+                }
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('momsiesLoggedInUser');
+            alert('🌸 You have been logged out. Come back soon!');
+            window.location.href = 'index.html';
+        }
+
+        function updateCartCountDisplay() {
+            const cart = JSON.parse(localStorage.getItem('momsiesCart')) || [];
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCountSpan = document.getElementById('cartCount');
+            if (totalItems > 0) {
+                cartCountSpan.textContent = totalItems;
+                cartCountSpan.style.display = 'inline-flex';
+            } else {
+                cartCountSpan.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            displayAccount();
+            updateCartCountDisplay();
+        });
+    </script>
+</body>
+
+</html>

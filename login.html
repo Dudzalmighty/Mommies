@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — Momsies</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .toggle-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--blush);
+        }
+
+        .toggle-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--charcoal);
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn.active {
+            color: var(--deep-terracotta);
+            border-bottom: 3px solid var(--deep-terracotta);
+        }
+
+        .form-panel {
+            display: none;
+        }
+
+        .form-panel.active-panel {
+            display: block;
+        }
+
+        .error-message {
+            color: #d9534f;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--sage);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="container nav-flex">
+            <div class="logo">
+                <h1>🌸 Momsies</h1>
+                <p>nurture • comfort • joy</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="category.html">Packages</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 500px; margin: 60px auto;">
+        <div class="card">
+            <h2 style="text-align: center;">🌸 Welcome to Momsies</h2>
+            <p style="text-align: center; margin-bottom: 24px;">Sign in or create your account</p>
+
+            <div class="toggle-buttons">
+                <button class="toggle-btn active" id="showLoginBtn">Sign In</button>
+                <button class="toggle-btn" id="showRegisterBtn">Create Account</button>
+            </div>
+
+            <div id="loginPanel" class="form-panel active-panel">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="mama@example.com">
+                    <div class="error-message" id="loginEmailError">Please enter a valid email address with @</div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                    <div class="error-message" id="loginPasswordError">Password is required</div>
+                </div>
+                <button class="btn-primary" style="width: 100%;" onclick="handleLogin()">Sign In</button>
+                <p style="text-align: center; margin-top: 16px;"><a href="#" onclick="showForgotPassword()">Forgot your
+                        password?</a></p>
+            </div>
+
+            <div id="registerPanel" class="form-panel">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="Mama Johnson">
+                    <div class="error-message" id="regNameError">Name is required</div>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="regEmail" placeholder="mama@example.com">
+                    <div class="error-message" id="regEmailError">Please enter a valid email address with @</div>
+                    <div class="success-message" id="regEmailSuccess"></div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" placeholder="At least 6 characters">
+                    <div class="error-message" id="regPasswordError">Password must be at least 6 characters</div>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="regConfirmPassword" placeholder="Confirm your password">
+                    <div class="error-message" id="regConfirmError">Passwords do not match</div>
+                </div>
+                <button class="btn-primary" style="width: 100%;" onclick="handleRegister()">Create Account</button>
+            </div>
+
+            <hr style="margin: 24px 0;">
+            <p style="text-align: center; font-size: 0.85rem; color: #7e6a5e;">By continuing, you agree to Momsies'
+                Terms of Service and Privacy Policy.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-grid">
+            <div>© 2026 Momsies — with tenderness</div>
+        </div>
+    </footer>
+
+    <script>
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const showRegisterBtn = document.getElementById('showRegisterBtn');
+        const loginPanel = document.getElementById('loginPanel');
+        const registerPanel = document.getElementById('registerPanel');
+
+        showLoginBtn.addEventListener('click', () => {
+            showLoginBtn.classList.add('active');
+            showRegisterBtn.classList.remove('active');
+            loginPanel.classList.add('active-panel');
+            registerPanel.classList.remove('active-panel');
+        });
+
+        showRegisterBtn.addEventListener('click', () => {
+            showRegisterBtn.classList.add('active');
+            showLoginBtn.classList.remove('active');
+            registerPanel.classList.add('active-panel');
+            loginPanel.classList.remove('active-panel');
+        });
+
+        function isValidEmail(email) {
+            return email && email.includes('@') && email.length > 3;
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const emailError = document.getElementById('loginEmailError');
+            const passwordError = document.getElementById('loginPasswordError');
+
+            let isValid = true;
+
+            if (!isValidEmail(email)) {
+                emailError.style.display = 'block';
+                isValid = false;
+            } else {
+                emailError.style.display = 'none';
+            }
+
+            if (!password) {
+                passwordError.style.display = 'block';
+                isValid = false;
+            } else {
+                passwordError.style.display = 'none';
+            }
+
+            if (isValid) {
+                const users = JSON.parse(localStorage.getItem('momsiesUsers')) || [];
+                const user = users.find(u => u.email === email && u.password === password);
+
+                if (user) {
+                    localStorage.setItem('momsiesLoggedInUser', JSON.stringify({
+                        email: user.email,
+                        name: user.name
+                    }));
+                    alert('🌸 Welcome back, ' + user.name + '!');
+                    window.location.href = 'index.html';
+                } else {
+                    alert('❌ Invalid email or password. Please try again or create an account.');
+                }
+            }
+        }
+
+        function handleRegister() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            const nameError = document.getElementById('regNameError');
+            const emailError = document.getElementById('regEmailError');
+            const passwordError = document.getElementById('regPasswordError');
+            const confirmError = document.getElementById('regConfirmError');
+
+            let isValid = true;
+
+            if (!name) {
+                nameError.style.display = 'block';
+                isValid = false;
+            } else {
+                nameError.style.display = 'none';
+            }
+
+            if (!isValidEmail(email)) {
+                emailError.style.display = 'block';
+                isValid = false;
+            } else {
+                emailError.style.display = 'none';
+                const users = JSON.parse(localStorage.getItem('momsiesUsers')) || [];
+                if (users.find(u => u.email === email)) {
+                    emailError.textContent = 'This email is already registered. Please sign in.';
+                    emailError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    emailError.style.display = 'none';
+                }
+            }
+
+            if (password.length < 6) {
+                passwordError.style.display = 'block';
+                isValid = false;
+            } else {
+                passwordError.style.display = 'none';
+            }
+
+            if (password !== confirmPassword) {
+                confirmError.style.display = 'block';
+                isValid = false;
+            } else {
+                confirmError.style.display = 'none';
+            }
+
+            if (isValid) {
+                const users = JSON.parse(localStorage.getItem('momsiesUsers')) || [];
+                users.push({
+                    name: name,
+                    email: email,
+                    password: password,
+                    joinDate: new Date().toLocaleDateString()
+                });
+                localStorage.setItem('momsiesUsers', JSON.stringify(users));
+
+                alert('🎉 Account created successfully, ' + name + '! Please sign in.');
+
+                showLoginBtn.classList.add('active');
+                showRegisterBtn.classList.remove('active');
+                loginPanel.classList.add('active-panel');
+                registerPanel.classList.remove('active-panel');
+
+                document.getElementById('loginEmail').value = email;
+
+                document.getElementById('regName').value = '';
+                document.getElementById('regEmail').value = '';
+                document.getElementById('regPassword').value = '';
+                document.getElementById('regConfirmPassword').value = '';
+            }
+        }
+
+        function showForgotPassword() {
+            alert('📧 Please contact hello@momsiesja.com to reset your password.');
+        }
+
+        document.getElementById('regEmail').addEventListener('input', function () {
+            const email = this.value.trim();
+            const emailError = document.getElementById('regEmailError');
+            const emailSuccess = document.getElementById('regEmailSuccess');
+
+            if (email && email.includes('@')) {
+                emailError.style.display = 'none';
+                emailSuccess.textContent = '✓ Valid email address';
+                emailSuccess.style.display = 'block';
+            } else if (email && !email.includes('@')) {
+                emailError.textContent = 'Please enter a valid email address with @';
+                emailError.style.display = 'block';
+                emailSuccess.style.display = 'none';
+            } else {
+                emailError.style.display = 'none';
+                emailSuccess.style.display = 'none';
+            }
+        });
+
+        document.getElementById('regConfirmPassword').addEventListener('input', function () {
+            const password = document.getElementById('regPassword').value;
+            const confirm = this.value;
+            const confirmError = document.getElementById('regConfirmError');
+
+            if (confirm && password !== confirm) {
+                confirmError.style.display = 'block';
+            } else {
+                confirmError.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>

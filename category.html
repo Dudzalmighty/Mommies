@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop by Stage — Momsies</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cart-count {
+            background-color: var(--deep-terracotta);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+            margin-left: 5px;
+            display: none;
+        }
+
+        .user-greeting {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--deep-terracotta);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="container nav-flex">
+            <div class="logo">
+                <h1>🌸 Momsies</h1>
+                <p>nurture • comfort • joy</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="category.html">Packages</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="cart.html">Cart 🛒 <span class="cart-count" id="cartCount">0</span></a></li>
+                <li><a href="account.html">Account</a></li>
+            </ul>
+            <div id="authSection"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="section-title" style="margin-top: 48px;">🌸 Shop by Motherhood Stage 🌸</h1>
+        <p class="section-sub">Find the perfect care package for where you are in your journey.</p>
+
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="Pregnancy Glow (inside box).jpg.webp" alt="Pregnancy care package" class="product-img">
+                <h3>Pregnancy Glow</h3>
+                <p>Skincare, comfort goods, everyday must-haves for a serene pregnancy journey.</p>
+                <div class="price">JMD 4,500</div>
+                <button class="btn-primary"
+                    onclick="addProductToCart('pregnancy_001', 'Pregnancy Glow Package', 4500, 'Pregnancy Glow (inside box).jpg.webp')">Add
+                    to Cart</button>
+            </div>
+
+            <div class="product-card">
+                <img src="preganncy package hospital.jpg.avif" alt="Hospital bag essentials" class="product-img">
+                <h3>Hospital Bag Essentials</h3>
+                <p>Ready for labor & delivery day — everything you need in one bag.</p>
+                <div class="price">JMD 3,800</div>
+                <button class="btn-primary" onclick="addProductToCart('preganncy package hospital.jpg.avif')">Add
+                    to Cart</button>
+            </div>
+
+            <div class="product-card">
+                <img src="postpartum 2.jpg.webp" alt="Postpartum recovery package" class="product-img">
+                <h3>Postpartum Recovery</h3>
+                <p>Healing & self-care after birth. Supports comfort, hygiene and healing.</p>
+                <div class="price">JMD 5,200</div>
+                <button class="btn-primary"
+                    onclick="addProductToCart('postpartum_001', 'Postpartum Recovery Package', 5200, 'postpartum 2.jpg.webp')">Add
+                    to Cart</button>
+            </div>
+
+            <div class="product-card">
+                <img src="newborn package 2.jpg" alt="Newborn baby package" class="product-img">
+                <h3>Newborn Nest</h3>
+                <p>Baby's first months essentials — diapers, wipes, clothing and feeding supplies.</p>
+                <div class="price">JMD 6,100</div>
+                <button class="btn-primary"
+                    onclick="addProductToCart('newborn_001', 'Newborn Nest Package', 6100, 'newborn package 2.jpg')">Add
+                    to Cart</button>
+            </div>
+
+            <div class="product-card">
+                <img src="custum bundle.jpg" alt="Custom care bundle" class="product-img">
+                <h3>Custom Bundle</h3>
+                <p>Build your own package — pick the items that matter most to you.</p>
+                <div class="price">From JMD 3,800</div>
+                <button class="btn-primary"
+                    onclick="addProductToCart('custom_001', 'Custom Bundle', 3800, 'custum bundle.jpg')">Add
+                    to Cart</button>
+            </div>
+
+            <div class="product-card">
+                <img src="subscription-apps-meta.png" alt="Subscription box" class="product-img">
+                <h3>Subscription Box</h3>
+                <p>Monthly care delivered to your door — coming Spring 2026!</p>
+                <div class="price">JMD 4,200 / month</div>
+                <button class="btn-secondary"
+                    onclick="alert('📅 Subscription boxes coming Spring 2026! Join our waitlist.')">Notify Me</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-grid">
+            <div><i class="fas fa-leaf"></i> Momsies — New Kingston, Jamaica<br>📧 hello@momsiesja.com</div>
+            <div><i class="fab fa-instagram"></i> @momsies_ja</div>
+            <div>© 2026 Momsies — with tenderness</div>
+        </div>
+    </footer>
+
+    <script src="cart.js"></script>
+    <script>
+        function addProductToCart(id, name, price, image) {
+            if (typeof addToCart === 'function') {
+                addToCart(id, name, price, image);
+            } else {
+                let cart = JSON.parse(localStorage.getItem('momsiesCart')) || [];
+                const existing = cart.find(item => item.id === id);
+                if (existing) {
+                    existing.quantity += 1;
+                } else {
+                    cart.push({ id: id, name: name, price: price, image: image, quantity: 1 });
+                }
+                localStorage.setItem('momsiesCart', JSON.stringify(cart));
+                alert(name + ' added to cart!');
+            }
+            updateCartCountDisplay();
+        }
+
+        function updateCartCountDisplay() {
+            const cart = JSON.parse(localStorage.getItem('momsiesCart')) || [];
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCountSpan = document.getElementById('cartCount');
+            if (cartCountSpan) {
+                if (totalItems > 0) {
+                    cartCountSpan.textContent = totalItems;
+                    cartCountSpan.style.display = 'inline-flex';
+                } else {
+                    cartCountSpan.style.display = 'none';
+                }
+            }
+        }
+
+        function updateAuthSection() {
+            const authSection = document.getElementById('authSection');
+            if (!authSection) return;
+            const loggedInUser = localStorage.getItem('momsiesLoggedInUser');
+
+            if (loggedInUser) {
+                const user = JSON.parse(loggedInUser);
+                authSection.innerHTML = '<div class="user-greeting"><span class="user-name"><i class="fas fa-heart"></i> Hello, ' + user.name + '!</span><button class="btn-outline" onclick="handleLogout()" style="padding: 6px 16px;">Sign Out</button></div>';
+            } else {
+                authSection.innerHTML = '<a href="login.html"><button class="btn-primary"><i class="fas fa-heart"></i> Sign In</button></a>';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('momsiesLoggedInUser');
+            alert('🌸 You have been logged out. Come back soon!');
+            updateAuthSection();
+            updateCartCountDisplay();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            updateAuthSection();
+            updateCartCountDisplay();
+        });
+    </script>
+</body>
+
+</html>
