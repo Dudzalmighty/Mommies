@@ -1,28 +1,24 @@
 // Momsies - Shopping Cart Logic
 // Uses localStorage to save cart items across all pages
 
-let cart = [];
-
-// Load cart from localStorage when page loads
-function loadCart() {
-    const savedCart = localStorage.getItem('momsiesCart');
-    if (savedCart) {
-        cart = JSON.parse(savedCart);
-    } else {
-        cart = [];
+// Get cart from localStorage
+function getCart() {
+    const cart = localStorage.getItem('momsiesCart');
+    if (cart) {
+        return JSON.parse(cart);
     }
-    updateCartCount();
-    return cart;
+    return [];
 }
 
 // Save cart to localStorage
-function saveCart() {
+function saveCart(cart) {
     localStorage.setItem('momsiesCart', JSON.stringify(cart));
     updateCartCount();
 }
 
 // Add item to cart
 function addToCart(productId, productName, productPrice, productImage) {
+    let cart = getCart();
     const existingItem = cart.find(item => item.id === productId);
 
     if (existingItem) {
@@ -37,15 +33,16 @@ function addToCart(productId, productName, productPrice, productImage) {
         });
     }
 
-    saveCart();
+    saveCart(cart);
     showAddedToCartMessage(productName);
     return cart;
 }
 
 // Remove item from cart
 function removeFromCart(productId) {
+    let cart = getCart();
     cart = cart.filter(item => item.id !== productId);
-    saveCart();
+    saveCart(cart);
     if (typeof displayCart === 'function') {
         displayCart();
     }
@@ -53,27 +50,40 @@ function removeFromCart(productId) {
 
 // Update quantity
 function updateQuantity(productId, newQuantity) {
+    let cart = getCart();
     const item = cart.find(item => item.id === productId);
     if (item) {
+        newQuantity = parseInt(newQuantity);
         if (newQuantity <= 0) {
-            removeFromCart(productId);
+            cart = cart.filter(i => i.id !== productId);
         } else {
             item.quantity = newQuantity;
-            saveCart();
         }
+        saveCart(cart);
     }
     if (typeof displayCart === 'function') {
         displayCart();
     }
 }
 
+// Clear entire cart
+function clearCart() {
+    localStorage.removeItem('momsiesCart');
+    if (typeof displayCart === 'function') {
+        displayCart();
+    }
+    updateCartCount();
+}
+
 // Get cart total
 function getCartTotal() {
+    const cart = getCart();
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 }
 
 // Get total items count
 function getTotalItems() {
+    const cart = getCart();
     return cart.reduce((count, item) => count + item.quantity, 0);
 }
 
@@ -102,16 +112,7 @@ function showAddedToCartMessage(productName) {
     }, 2000);
 }
 
-// Clear entire cart
-function clearCart() {
-    cart = [];
-    saveCart();
-    if (typeof displayCart === 'function') {
-        displayCart();
-    }
-}
-
 // Initialize cart on page load
 document.addEventListener('DOMContentLoaded', function () {
-    loadCart();
+    updateCartCount();
 });
