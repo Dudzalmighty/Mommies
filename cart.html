@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Cart — Momsies</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
@@ -20,36 +17,30 @@
             margin-left: 5px;
             display: none;
         }
-
         .user-greeting {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
         .user-name {
             font-weight: 500;
             color: var(--deep-terracotta);
         }
-
         .empty-cart {
             text-align: center;
             padding: 60px 20px;
         }
-
         .empty-cart i {
             font-size: 4rem;
             color: var(--dusty-rose);
             margin-bottom: 20px;
         }
-
         .cart-item-img {
             width: 80px;
             height: 80px;
             object-fit: cover;
             border-radius: 16px;
         }
-
         .quantity-input {
             width: 70px;
             padding: 8px;
@@ -57,7 +48,6 @@
             border: 1px solid var(--blush);
             text-align: center;
         }
-
         .cart-table {
             width: 100%;
             border-collapse: collapse;
@@ -65,20 +55,16 @@
             border-radius: 28px;
             overflow: hidden;
         }
-
-        .cart-table th,
-        .cart-table td {
+        .cart-table th, .cart-table td {
             padding: 16px;
             text-align: left;
             border-bottom: 1px solid var(--blush);
         }
-
         .cart-table th {
             background: var(--warm-gray);
             color: var(--deep-terracotta);
             font-weight: 600;
         }
-
         .cart-summary {
             background: var(--warm-gray);
             border-radius: 28px;
@@ -87,7 +73,6 @@
         }
     </style>
 </head>
-
 <body>
     <div class="navbar">
         <div class="container nav-flex">
@@ -125,9 +110,9 @@
         function displayCart() {
             const cartContainer = document.getElementById('cartContainer');
             const cart = getCart();
-
+            
             console.log('Cart contents:', cart);
-
+            
             if (!cart || cart.length === 0) {
                 cartContainer.innerHTML = `
                     <div class="empty-cart">
@@ -139,7 +124,7 @@
                 `;
                 return;
             }
-
+            
             let cartHtml = `
                 <table class="cart-table">
                     <thead>
@@ -147,17 +132,17 @@
                     </thead>
                     <tbody>
             `;
-
+            
             let total = 0;
-
+            
             for (let i = 0; i < cart.length; i++) {
                 const item = cart[i];
                 const subtotal = item.price * item.quantity;
                 total += subtotal;
-
+                
                 // Use the image path from the item
                 const imageUrl = item.image || 'https://placehold.co/100x100/f7c9c0/b45f4b?text=Product';
-
+                
                 cartHtml += `
                     <tr>
                         <td style="display: flex; align-items: center; gap: 15px;">
@@ -173,10 +158,10 @@
                     </tr>
                 `;
             }
-
+            
             const shipping = total > 7000 ? 0 : 500;
             const grandTotal = total + shipping;
-
+            
             cartHtml += `
                     </tbody>
                 </table>
@@ -201,38 +186,38 @@
                     <a href="category.html" style="display: block; text-align: center; margin-top: 16px;">← Continue Shopping</a>
                 </div>
             `;
-
+            
             cartContainer.innerHTML = cartHtml;
             updateCartCount();
         }
-
+        
         // Wrapper functions for cart.html
         function removeFromCartItem(productId) {
             removeFromCart(productId);
             displayCart();
         }
-
+        
         function updateQuantityFromCart(productId, newQuantity) {
             updateQuantity(productId, newQuantity);
             displayCart();
         }
-
+        
         function clearCartItems() {
             clearCart();
             displayCart();
         }
-
+        
         // Make functions global
         window.removeFromCartItem = removeFromCartItem;
         window.updateQuantityFromCart = updateQuantityFromCart;
         window.clearCartItems = clearCartItems;
-
+        
         // Auth Functions
         function updateAuthSection() {
             const authSection = document.getElementById('authSection');
             if (!authSection) return;
             const loggedInUser = localStorage.getItem('momsiesLoggedInUser');
-
+            
             if (loggedInUser) {
                 const user = JSON.parse(loggedInUser);
                 authSection.innerHTML = '<div class="user-greeting"><span class="user-name"><i class="fas fa-heart"></i> Hello, ' + user.name + '!</span><button class="btn-outline" onclick="handleLogout()" style="padding: 6px 16px;">Sign Out</button></div>';
@@ -240,7 +225,7 @@
                 authSection.innerHTML = '<a href="login.html"><button class="btn-primary"><i class="fas fa-heart"></i> Sign In</button></a>';
             }
         }
-
+        
         function handleLogout() {
             localStorage.removeItem('momsiesLoggedInUser');
             alert('🌸 You have been logged out. Come back soon!');
@@ -248,15 +233,14 @@
             updateCartCount();
             displayCart();
         }
-
+        
         window.handleLogout = handleLogout;
-
+        
         // Page Load
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             updateAuthSection();
             displayCart();
         });
     </script>
 </body>
-
 </html>
